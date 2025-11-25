@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>حاسبة مساحات الأراضي الاحترافية</title>
+  <title>حاسبة مساحات الأراضي الزراعية الاحترافية</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -27,7 +27,7 @@
     header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
     header p { font-size: 1.2rem; opacity: 0.9; }
 
-    .container { max-width: 1300px; margin: 0 auto; }
+    .container { max-width: 1400px; margin: 0 auto; }
 
     .section {
       background: white;
@@ -38,146 +38,105 @@
     }
     h2 { color: #1e3c72; margin-bottom: 20px; text-align: center; font-size: 1.8rem; }
 
-    .price-input {
-      text-align: center;
+    /* الجزء الجديد: إحصائيات + سعر الفدان في نفس السطر */
+    .top-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
       margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
-    .price-input label { font-size: 1.3rem; margin-left: 10px; }
+    .stats-box, .price-input {
+      background: rgba(255,255,255,0.1);
+      padding: 15px 25px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      min-width: 280px;
+      text-align: center;
+    }
+    .stats-box h3 { font-size: 1.1rem; margin-bottom: 10px; opacity: 0.9; }
+    .stats-box .stat { font-size: 1.4rem; font-weight: bold; margin: 8px 0; }
+    .price-input label { font-size: 1.3rem; margin-left: 10px; display: block; margin-bottom: 8px; }
     .price-input input {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       padding: 12px 20px;
-      width: 250px;
-      border: 2px solid #2a5298;
+      width: 100%;
+      max-width: 300px;
+      border: 2px solid #fff;
       border-radius: 10px;
       text-align: center;
+      background: rgba(255,255,255,0.9);
+      color: #2c3e50;
+      font-weight: bold;
     }
 
-    /* البحث الذكي */
-    .search-box {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    #searchInput {
-      width: 100%;
-      padding: 15px 20px;
-      font-size: 1.3rem;
-      border: 2px solid #2a5298;
-      border-radius: 12px;
-      background: #f8f9ff;
-    }
-    #suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 1px solid #ddd;
-      border-top: none;
-      max-height: 300px;
-      overflow-y: auto;
-      z-index: 1000;
-      border-radius: 0 0 12px 12px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      display: none;
-    }
-    .suggestion-item {
-      padding: 12px 20px;
-      cursor: pointer;
-      border-bottom: 1px solid #eee;
-    }
+    /* باقي الستايل كما هو */
+    .search-section { background: #f8fbff; padding: 20px; border-radius: 12px; border: 2px solid #e3eafc; }
+    .search-main { position: relative; margin-bottom: 15px; }
+    #searchInput { width: 100%; padding: 15px 50px 15px 20px; font-size: 1.3rem; border: 2px solid #2a5298; border-radius: 12px; background: white; }
+    #clearSearch { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: #dc3545; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: none; }
+
+    .filters-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 15px; }
+    .filter-input { flex: 1; min-width: 200px; padding: 12px 16px; border: 2px solid #2a5298; border-radius: 10px; font-size: 1.1rem; }
+    .filter-btn { background: #6c757d; color: white; padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+    .filter-btn:hover { background: #5a6268; }
+
+    #suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-top: none; max-height: 320px; overflow-y: auto; z-index: 1000; border-radius: 0 0 12px 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: none; }
+    .suggestion-item { padding: 14px 20px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
     .suggestion-item:hover { background: #ebf0ff; }
+    .plot-count { background: #2a5298; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border: 1px solid #ddd;
-    }
-    th {
-      background: #2a5298;
-      color: white;
-      font-weight: 700;
-    }
-    input[type="number"], input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 1rem;
-    }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; text-align: center; border: 1px solid #ddd; }
+    th { background: #2a5298; color: white; }
+    input[type="number"], input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; text-align: center; }
     input[readonly] { background: #f0f0f0; font-weight: bold; }
 
-    .add-row { 
-      background: #28a745; 
-      color: white; 
-      padding: 12px 25px; 
-      border: none; 
-      border-radius: 10px; 
-      cursor: pointer; 
-      font-size: 1.1rem;
-      margin: 15px 0;
-    }
+    .add-row { background: #28a745; color: white; padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; }
     .add-row:hover { background: #218838; }
-
-    .delete-row {
-      background: #dc3545;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .delete-row:hover { background: #c82333; }
+    .delete-row { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
 
     .deduct-section { background: #fff4f4; }
 
     .results {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
-      padding: 25px;
+      padding: 30px;
       border-radius: 15px;
       text-align: center;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+      transition: background 0.5s;
     }
-    .results div { margin: 15px 0; font-weight: bold; }
+    .warning {
+      color: #fff;
+      background: #c82333;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 15px 0;
+      font-weight: bold;
+      display: none;
+    }
 
-    .actions {
-      text-align: center;
-      margin: 30px 0;
-    }
-    .btn {
-      background: #1e3c72;
-      color: white;
-      padding: 15px 40px;
-      font-size: 1.3rem;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      margin: 0 10px;
-    }
-    .btn:hover { background: #162b54; }
-    .btn-print { background: #e91e63; }
-    .btn-print:hover { background: #c2185b; }
+    .actions { text-align: center; margin: 40px 0; }
+    .btn { padding: 15px 40px; font-size: 1.3rem; border: none; border-radius: 12px; cursor: pointer; margin: 0 12px; }
+    .btn-print { background: #e91e63; color: white; }
+    .btn-clear { background: #ff9800; color: white; }
+
+    .shortcuts { text-align: center; margin-top: 20px; color: #666; font-size: 0.9rem; }
 
     @media print {
       body * { visibility: hidden; }
       .container, .container * { visibility: visible; }
       .container { position: absolute; left: 0; top: 0; width: 100%; }
-      .add-row, .delete-row, .actions, #searchInput, #suggestions { display: none !important; }
-      header { background: #1e3c72 !important; -webkit-print-color-adjust: exact; }
-      .results { background: linear-gradient(135deg, #667eea, #764ba2) !important; -webkit-print-color-adjust: exact; }
-    }
-
-    @media (max-width: 768px) {
-      header h1 { font-size: 2rem; }
-      table { font-size: 0.9rem; }
-      input { font-size: 1rem; }
-      .price-input input { width: 100%; }
+      .actions, .search-section, .add-row, .delete-row, .shortcuts, .top-info { display: none !important; }
+      header, .results { -webkit-print-color-adjust: exact; color-adjust: exact; }
+      #printDate { display: block !important; }
     }
   </style>
 </head>
@@ -187,10 +146,19 @@
   <header>
     <h1>حاسبة مساحات الأراضي الزراعية</h1>
     <p>أداة احترافية لحساب المساحات والأسعار بدقة عالية</p>
+    <div style="margin-top:15px; font-size:1.1rem; display:none;" id="printDate">
+      تاريخ الطباعة: <span></span>
+    </div>
   </header>
 
-  <div class="section">
-    <h2>سعر الفدان</h2>
+  <!-- الإضافة الجديدة: إحصائيات عامة + سعر الفدان -->
+  <div class="top-info">
+    <div class="stats-box">
+      <h3>بيانات </h3>
+      <div class="stat">عدد المستأجرين: <strong id="totalTenants">جاري التحميل...</strong></div>
+      <div class="stat">عدد الأحواض: <strong id="totalPlots">جاري التحميل...</strong></div>
+      <div class="stat">إجمالي المساحة: <strong id="totalArea">جاري التحميل...</strong></div>
+    </div>
     <div class="price-input">
       <label>سعر الفدان (جنيه مصري):</label>
       <input type="number" id="feddanPrice" value="1000000" min="0"/>
@@ -198,24 +166,30 @@
   </div>
 
   <div class="section">
-    <h2>البحث عن مستأجر أو إضافة يدويًا</h2>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="اكتب اسم المستأجر (مثال: أحمد محمد)"/>
-      <div id="suggestions"></div>
+    <h2>البحث المتقدم في الأراضي</h2>
+    <div class="search-section">
+      <div class="search-main">
+        <input type="text" id="searchInput" placeholder="ابحث باسم المستأجر..." autocomplete="off"/>
+        <button id="clearSearch" title="مسح البحث">×</button>
+        <div id="suggestions"></div>
+      </div>
+      <div class="filters-row">
+        <input type="text" id="filterNahia" class="filter-input" placeholder="الناحية (مثال: منشأة البكاري)"/>
+        <input type="text" id="filterBasin" class="filter-input" placeholder="رقم الحوض (مثال: 15)"/>
+        <button class="filter-btn" id="clearFilters">مسح الفلاتر</button>
+        <button class="add-row" onclick="addRow('main')">إضافة صف يدويًا</button>
+      </div>
     </div>
-
-    <button class="add-row" onclick="addRow('main')">
-      إضافة صف يدويًا
-    </button>
   </div>
 
-  <!-- جدول القطع الرئيسية -->
+  <!-- باقي الجداول كما هي -->
   <div class="section">
     <h2>قطع الأراضي المراد شراؤها</h2>
     <table id="mainTable">
       <thead>
         <tr>
           <th>رقم الحوض</th>
+          <th>الناحية</th>
           <th>فدان</th>
           <th>قيراط</th>
           <th>سهم</th>
@@ -228,16 +202,14 @@
     </table>
   </div>
 
-  <!-- جدول الطرح -->
   <div class="section deduct-section">
     <h2>قطع يتم طرحها (اختياري)</h2>
-    <button class="add-row" onclick="addRow('deduct')">
-      إضافة صف طرح
-    </button>
+    <button class="add-row" onclick="addRow('deduct')">إضافة صف طرح</button>
     <table id="deductTable">
       <thead>
         <tr>
           <th>رقم الحوض</th>
+          <th>الناحية</th>
           <th>فدان</th>
           <th>قيراط</th>
           <th>سهم</th>
@@ -250,17 +222,20 @@
     </table>
   </div>
 
-  <!-- النتيجة النهائية -->
-  <div class="section results">
+  <div class="section results" id="resultsSection">
     <div>إجمالي المساحة: <span id="totalFeddan">0</span> فدان <span id="totalQirat">0</span> قيراط <span id="totalSahm">0</span> سهم</div>
+    <div class="warning" id="negativeWarning">تحذير: المساحة المطروحة أكبر من الأصلية!</div>
     <div>المساحة بالمتر المربع: <span id="totalSqm">0</span> م²</div>
     <div>السعر الإجمالي: <span id="totalPrice">0</span> جنيه مصري</div>
   </div>
 
   <div class="actions">
-    <button class="btn btn-print" onclick="window.print()">
-      طباعة PDF
-    </button>
+    <button class="btn btn-print" onclick="window.print()">طباعة PDF</button>
+    <button class="btn btn-clear" onclick="resetAll()">مسح الكل</button>
+  </div>
+
+  <div class="shortcuts">
+    اختصارات: F2 → إضافة صف | Ctrl+P → طباعة | Esc → مسح البحث
   </div>
 </div>
 
@@ -269,12 +244,17 @@ const SHARE_PER_FEDDAN = 576;
 const SQM_PER_SHARE = 7.35;
 let tenantsData = [];
 
-// تحميل البيانات من Zira.csv الحقيقي
+// تحميل البيانات + حساب الإحصائيات العامة
 fetch('https://raw.githubusercontent.com/abukora/calculator/main/Zira.csv')
   .then(r => r.text())
   .then(text => {
     tenantsData = parseCSV(text);
-    console.log(`تم تحميل ${tenantsData.length} قطعة من Zira.csv`);
+    updateGlobalStats();
+    console.log(`تم تحميل ${tenantsData.length} قطعة`);
+  })
+  .catch(err => {
+    console.error('خطأ في تحميل البيانات:', err);
+    document.getElementById('totalTenants').textContent = 'فشل التحميل';
   });
 
 function parseCSV(text) {
@@ -286,18 +266,38 @@ function parseCSV(text) {
     const values = lines[i].split(';');
     const obj = {};
     headers.forEach((h, idx) => obj[h.trim()] = (values[idx] || '').trim());
-    if (obj['المستأجر'] && obj['الحوض']) data.push(obj);
+    if (obj['المستأجر']) data.push(obj);
   }
   return data;
 }
 
+// دالة جديدة: تحديث الإحصائيات العامة
+function updateGlobalStats() {
+  const uniqueTenants = new Set(tenantsData.map(t => t['المستأجر'])).size;
+  const totalPlots = tenantsData.length;
+
+  let totalShares = 0;
+  tenantsData.forEach(t => {
+    totalShares += toShares(t['الفدان'], t['القيراط'], t['السهم']);
+  });
+
+  const { f, q, s } = fromShares(totalShares);
+
+  document.getElementById('totalTenants').textContent = uniqueTenants.toLocaleString('ar-EG');
+  document.getElementById('totalPlots').textContent = totalPlots.toLocaleString('ar-EG');
+  document.getElementById('totalArea').textContent = `${f} فدان ${q} قيراط ${s} سهم`;
+}
+
 function toShares(f, q, s) {
-  return (f || 0) * SHARE_PER_FEDDAN + (q || 0) * 24 + (s || 0);
+  f = parseInt(f) || 0;
+  q = parseInt(q) || 0;
+  s = parseInt(s) || 0;
+  return f * 576 + q * 24 + s;
 }
 
 function fromShares(totalShares) {
-  const f = Math.floor(totalShares / SHARE_PER_FEDDAN);
-  const rem = totalShares % SHARE_PER_FEDDAN;
+  const f = Math.floor(totalShares / 576);
+  const rem = totalShares % 576;
   const q = Math.floor(rem / 24);
   const s = rem % 24;
   return { f, q, s };
@@ -309,24 +309,26 @@ function calculateRow(row) {
   const s = parseInt(row.querySelector('.sahm').value) || 0;
   const shares = toShares(f, q, s);
   const sqm = shares * SQM_PER_SHARE;
-  const pricePerShare = (parseFloat(document.getElementById('feddanPrice').value) || 0) / SHARE_PER_FEDDAN;
-  const price = shares * pricePerShare;
+  const feddanPrice = parseFloat(document.getElementById('feddanPrice').value) || 0;
+  const price = shares * (feddanPrice / 576);
 
   row.querySelector('.sqm').value = sqm.toFixed(2);
-  row.querySelector('.price').value = price.toLocaleString('ar-EG');
+  row.querySelector('.price').value = price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function addRow(tableId, plotData = null) {
   const tbody = document.getElementById(tableId === 'main' ? 'mainTable' : 'deductTable').querySelector('tbody');
   const row = tbody.insertRow();
 
-  const name = plotData ? plotData['الحوض'] || '' : '';
+  const name = plotData ? (plotData['الحوض'] || '') : '';
+  const nahia = plotData ? (plotData['الناحية'] || '') : '';
   const f = plotData ? parseInt(plotData['الفدان'] || 0) : 0;
   const q = plotData ? parseInt(plotData['القيراط'] || 0) : 0;
   const s = plotData ? parseInt(plotData['السهم'] || 0) : 0;
 
   row.innerHTML = `
     <td><input type="text" class="name" value="${name}" ${plotData ? 'readonly' : ''}></td>
+    <td><input type="text" class="nahia" value="${nahia}" readonly></td>
     <td><input type="number" class="feddan" min="0" value="${f}"></td>
     <td><input type="number" class="qirat" min="0" max="23" value="${q}"></td>
     <td><input type="number" class="sahm" min="0" max="23" value="${s}"></td>
@@ -347,82 +349,132 @@ function updateTotal() {
   let mainShares = 0, deductShares = 0;
 
   document.querySelectorAll('#mainTable tbody tr').forEach(row => {
-    mainShares += toShares(
-      parseInt(row.querySelector('.feddan').value),
-      parseInt(row.querySelector('.qirat').value),
-      parseInt(row.querySelector('.sahm').value)
-    );
+    mainShares += toShares(row.querySelector('.feddan').value, row.querySelector('.qirat').value, row.querySelector('.sahm').value);
   });
 
   document.querySelectorAll('#deductTable tbody tr').forEach(row => {
-    deductShares += toShares(
-      parseInt(row.querySelector('.feddan').value),
-      parseInt(row.querySelector('.qirat').value),
-      parseInt(row.querySelector('.sahm').value)
-    );
+    deductShares += toShares(row.querySelector('.feddan').value, row.querySelector('.qirat').value, row.querySelector('.sahm').value);
   });
 
-  const netShares = mainShares - deductShares;
-  const { f, q, s } = fromShares(netShares < 0 ? 0 : netShares);
-  const sqm = netShares * SQM_PER_SHARE;
-  const price = netShares * (parseFloat(document.getElementById('feddanPrice').value) || 0) / SHARE_PER_FEDDAN;
+  const netShares = Math.max(0, mainShares - deductShares);
+  const { f, q, s } = fromShares(netShares);
+  const feddanPrice = parseFloat(document.getElementById('feddanPrice').value) || 0;
+  const totalPrice = netShares * (feddanPrice / 576);
 
   document.getElementById('totalFeddan').textContent = f;
   document.getElementById('totalQirat').textContent = q;
   document.getElementById('totalSahm').textContent = s;
-  document.getElementById('totalSqm').textContent = sqm.toFixed(2);
-  document.getElementById('totalPrice').textContent = price.toLocaleString('ar-EG');
+  document.getElementById('totalSqm').textContent = (netShares * SQM_PER_SHARE).toFixed(2);
+  document.getElementById('totalPrice').textContent = totalPrice.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  const warning = document.getElementById('negativeWarning');
+  if (mainShares < deductShares) {
+    const diff = fromShares(deductShares - mainShares);
+    warning.textContent = `تحذير: المساحة المطروحة أكبر بـ ${diff.f} فدان ${diff.q} قيراط ${diff.s} سهم`;
+    warning.style.display = 'block';
+    document.getElementById('resultsSection').style.background = 'linear-gradient(135deg, #ff416c, #ff4757)';
+  } else {
+    warning.style.display = 'none';
+    document.getElementById('resultsSection').style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+  }
 }
 
-// البحث الذكي باسم المستأجر
-document.getElementById('searchInput').addEventListener('input', function() {
-  const query = this.value.trim();
-  const suggestions = document.getElementById('suggestions');
+// باقي الكود (البحث، الحفظ، الطباعة، الاختصارات) كما هو في النسخة السابقة
+const searchInput = document.getElementById('searchInput');
+const filterNahia = document.getElementById('filterNahia');
+const filterBasin = document.getElementById('filterBasin');
+const clearSearch = document.getElementById('clearSearch');
+const clearFilters = document.getElementById('clearFilters');
+const suggestions = document.getElementById('suggestions');
+
+function performSearch() {
+  const query = searchInput.value.trim().toLowerCase();
+  const nahia = filterNahia.value.trim();
+  const basin = filterBasin.value.trim();
+
   suggestions.innerHTML = '';
-
-  if (query.length === 0) {
+  if (query === '' && nahia === '' && basin === '') {
     suggestions.style.display = 'none';
     return;
   }
 
-  const uniqueTenants = [...new Set(tenantsData.map(t => t['المستأجر']).filter(Boolean))];
-  const matches = uniqueTenants.filter(name => name.toLowerCase().includes(query.toLowerCase()));
+  let filtered = tenantsData;
+  if (query) filtered = filtered.filter(t => t['المستأجر']?.toLowerCase().includes(query));
+  if (nahia) filtered = filtered.filter(t => t['الناحية']?.includes(nahia));
+  if (basin) filtered = filtered.filter(t => t['الحوض']?.includes(basin));
 
-  if (matches.length === 0) {
-    suggestions.style.display = 'none';
-    return;
-  }
+  const uniqueNames = [...new Set(filtered.map(t => t['المستأجر']))].slice(0, 12);
 
-  matches.slice(0, 10).forEach(name => {
+  uniqueNames.forEach(name => {
+    const plots = filtered.filter(t => t['المستأجر'] === name);
     const div = document.createElement('div');
     div.className = 'suggestion-item';
-    div.textContent = name;
+    div.innerHTML = `<div><strong>${name}</strong><br><small>${plots.length} قطعة ${nahia ? '• ' + nahia : ''} ${basin ? '• حوض ' + basin : ''}</small></div><span class="plot-count">${plots.length} قطعة</span>`;
     div.onclick = () => {
-      const plots = tenantsData.filter(t => t['المستأجر'] === name);
       plots.forEach(plot => addRow('main', plot));
-      this.value = '';
+      searchInput.value = name;
+      clearSearch.style.display = 'block';
       suggestions.style.display = 'none';
     };
     suggestions.appendChild(div);
   });
 
-  suggestions.style.display = 'block';
-});
+  suggestions.style.display = uniqueNames.length ? 'block' : 'none';
+}
 
-// إغلاق الاقتراحات
+searchInput.addEventListener('input', performSearch);
+filterNahia.addEventListener('input', performSearch);
+filterBasin.addEventListener('input', performSearch);
+
+clearFilters.onclick = () => {
+  searchInput.value = filterNahia.value = filterBasin.value = '';
+  clearSearch.style.display = 'none';
+  suggestions.style.display = 'none';
+};
+
+clearSearch.onclick = () => {
+  searchInput.value = '';
+  clearSearch.style.display = 'none';
+  performSearch();
+};
+
 document.addEventListener('click', e => {
-  if (!e.target.closest('.search-box')) {
-    document.getElementById('suggestions').style.display = 'none';
-  }
+  if (!e.target.closest('.search-section')) suggestions.style.display = 'none';
 });
 
-// تحديث عند تغيير سعر الفدان
-document.getElementById('feddanPrice').addEventListener('input', () => {
-  document.querySelectorAll('tbody tr').forEach(calculateRow);
+document.getElementById('feddanPrice').addEventListener('change', () => {
+  localStorage.setItem('feddanPrice', document.getElementById('feddanPrice').value);
   updateTotal();
 });
 
-window.onload = () => addRow('main');
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('feddanPrice');
+  if (saved) document.getElementById('feddanPrice').value = saved;
+  addRow('main');
+});
+
+window.addEventListener('beforeprint', () => {
+  const now = new Date();
+  const str = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  document.querySelector('#printDate span').textContent = str;
+  document.getElementById('printDate').style.display = 'block';
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'F2') { e.preventDefault(); addRow('main'); }
+  if (e.ctrlKey && e.key === 'p') { e.preventDefault(); window.print(); }
+  if (e.key === 'Escape') { searchInput.focus(); searchInput.select(); }
+});
+
+function resetAll() {
+  if (confirm('مسح جميع البيانات؟')) {
+    document.querySelectorAll('#mainTable tbody, #deductTable tbody').forEach(tbody => tbody.innerHTML = '');
+    addRow('main');
+    searchInput.value = filterNahia.value = filterBasin.value = '';
+    clearSearch.style.display = 'none';
+    updateTotal();
+  }
+}
 </script>
 </body>
 </html>
